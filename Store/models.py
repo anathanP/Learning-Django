@@ -14,7 +14,8 @@ class Promotion(models.Model):
 class Product(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    price = models.PositiveIntegerField()
+    slug = models.SlugField(default="-")
+    unit_price = models.PositiveIntegerField()
     inventory = models.PositiveSmallIntegerField()
     last_update = models.DateTimeField(auto_now=True)
     Product = models.ForeignKey(Collection, on_delete=models.PROTECT)
@@ -76,5 +77,6 @@ class CartItem(models.Model):
 class Address(models.Model):
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
+    zip = models.CharField(max_length=20, default="0000")
     customer = models.OneToOneField(Customer, on_delete=models.CASCADE, primary_key=True)
 

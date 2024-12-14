@@ -2,3 +2,11 @@
 StoreFront/__pycache__/
 playground/__pycache__/
 playground/migrations/__pycache__/
+
+#migrations 
+Store/migrations/*.py
+Likes/migrations/*.py
+Tags/migrations/*.py
+
+#sqlite
+db.sqlite3
