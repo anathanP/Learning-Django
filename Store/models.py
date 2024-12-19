@@ -23,12 +23,12 @@ class Product(models.Model):
     slug = models.SlugField()
     unit_price = models.PositiveIntegerField(
         validators=[
-            MinValueValidator(1, "You should enter a value more than 1.")
+            MinValueValidator(1, message="You need to enter a value more than 1")
      ]
     )
     inventory = models.PositiveSmallIntegerField(
         validators=[
-            MinValueValidator(0, "You should enter a value more than 0.")
+            MinValueValidator(0, message="You need to enter a value more than 0")
         ]
     )
     last_update = models.DateTimeField(auto_now=True)
@@ -70,7 +70,7 @@ class Customer(models.Model):
 
 class Cart(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
-
+    
 
 class Order(models.Model):
     PAYMENT_PENDING = "P"

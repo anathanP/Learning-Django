@@ -1,11 +1,12 @@
 from django.contrib import admin, messages
+from django.contrib.contenttypes.admin import GenericTabularInline
 from django.http import HttpRequest
 from django.utils import html
 from django.utils.http import urlencode
 from django.urls import reverse
 from django.db.models import Count
-from . import models
-
+from Tags.models import TaggedItem
+from . import models 
 
 class InventoryFilter(admin.SimpleListFilter):
     title = "inventory"
@@ -21,11 +22,10 @@ class InventoryFilter(admin.SimpleListFilter):
             return queryset.filter(inventory__lt=10)
 
 # Register your models here.
-
+    
 @admin.register(models.Product)
 class ProductAdmin(admin.ModelAdmin):
     autocomplete_fields = ["Product"]
-
     prepopulated_fields = {
         "slug": ["title"]
     }
@@ -35,6 +35,7 @@ class ProductAdmin(admin.ModelAdmin):
     list_per_page = 10
     list_select_related = ["Product"]
     list_filter = ["Product", "last_update", InventoryFilter]
+    search_fields = ["title"]
     
     @admin.display(ordering="Product__title")    
     def collection_title(self, product):
@@ -63,7 +64,6 @@ class CustomerAdmin(admin.ModelAdmin):
     list_display = ["first_name", "last_name", "membership", "orders_count"]
     list_editable = ["membership"]
     list_per_page = 10
-    search_fields = ["first_name__istartswith", "last_name__istartswith", "orders_count"]
     
     @admin.display(ordering="orders_count")
     def orders_count(self, custmer):
@@ -81,9 +81,16 @@ class CustomerAdmin(admin.ModelAdmin):
             orders_count = Count("order")
         )
 
+class OrderItemsInline(admin.TabularInline):
+    autocomplete_fields= ["product"]
+    extra = 0
+    min_num = 1
+    model = models.OrderItem
+
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
     autocomplete_fields = ["customer"]
+    inlines = [OrderItemsInline]
     list_display = ["id", "placed_at", "customer"]
     list_per_page = 10
 
